@@ -4,6 +4,7 @@
  * Font Family: Inter (primary), System Default (fallback)
  */
 import { TextStyle, Platform } from 'react-native';
+import { colors } from './colors';
 
 const fontFamily = Platform.select({
   ios: 'System',
@@ -16,35 +17,35 @@ export const Typography: Record<string, TextStyle> = {
     fontFamily,
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#1A1A2E',
+    color: colors.text,
     lineHeight: 40,
   },
   screenTitle: {
     fontFamily,
     fontSize: 24,
     fontWeight: '600',
-    color: '#1A1A2E',
+    color: colors.text,
     lineHeight: 32,
   },
   sectionHeading: {
     fontFamily,
     fontSize: 18,
     fontWeight: '600',
-    color: '#1A1A2E',
+    color: colors.text,
     lineHeight: 26,
   },
   body: {
     fontFamily,
     fontSize: 14,
     fontWeight: '400',
-    color: '#555555',
+    color: colors.textSecondary,
     lineHeight: 22,
   },
   caption: {
     fontFamily,
     fontSize: 12,
     fontWeight: '400',
-    color: '#888888',
+    color: colors.gray500,
     lineHeight: 18,
   },
   button: {
@@ -57,7 +58,8 @@ export const Typography: Record<string, TextStyle> = {
     fontFamily,
     fontSize: 13,
     fontWeight: '600',
-    color: '#555555',
+    color: colors.textSecondary,
     lineHeight: 20,
   },
 };
+

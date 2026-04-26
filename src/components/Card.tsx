@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, ViewProps } from 'react-native';
-import { Colors } from '../constants/colors';
+import { colors } from '../constants/colors';
 
 interface CardProps extends ViewProps {
   children: React.ReactNode;
@@ -17,7 +17,7 @@ export const Card: React.FC<CardProps> = ({ children, noPadding, style, ...rest 
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: Colors.white,
+    backgroundColor: colors.white,
     borderRadius: 12,
     padding: 16,
     shadowColor: '#000',

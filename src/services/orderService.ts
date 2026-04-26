@@ -1,13 +1,17 @@
 import { supabase } from './supabaseClient';
-import type { Order, OrderItem, CartItem } from '../types';
+import type { Order, OrderItem } from '../types';
 
 export type { Order, OrderItem };
 
 export const orderService = {
   async getMyOrders(): Promise<Order[]> {
+    const { data: userData } = await supabase.auth.getUser();
+    if (!userData.user) throw new Error('Not authenticated');
+
     const { data, error } = await supabase
       .from('orders')
       .select('*')
+      .eq('user_id', userData.user.id)
       .order('created_at', { ascending: false });
 
     if (error) throw new Error(error.message);
@@ -36,7 +40,7 @@ export const orderService = {
     );
     const deliveryFee = 500;
     const grandTotal = subtotal + deliveryFee;
-    const orderNumber = `SVZ-${new Date().getFullYear()}-${String(Date.now()).slice(-5)}`;
+    const orderNumber = `SVZ-${new Date().getFullYear()}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
 
     // Create order
     const { data: orderData, error: orderError } = await supabase
@@ -91,5 +95,60 @@ export const orderService = {
       .eq('status', 'pending'); // Can only cancel pending orders
 
     if (error) throw new Error(error.message);
+  },
+
+  async getPurchaseHistory(
+    userId: string,
+    limit: number = 50,
+    offset: number = 0
+  ): Promise<{
+    orders: Order[];
+    total: number;
+  }> {
+    // Get total count
+    const { count, error: countError } = await supabase
+      .from('orders')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', userId);
+
+    if (countError) throw new Error(countError.message);
+
+    // Get paginated orders with items in a single query
+    const { data, error } = await supabase
+      .from('orders')
+      .select('*, order_items(*)')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+      .range(offset, offset + limit - 1);
+
+    if (error) throw new Error(error.message);
+
+    return {
+      orders: data as Order[],
+      total: count || 0,
+    };
+  },
+
+  async getOrderStats(userId: string): Promise<{
+    totalOrders: number;
+    totalSpent: number;
+    averageOrderValue: number;
+  }> {
+    const { data, error } = await supabase
+      .from('orders')
+      .select('grand_total')
+      .eq('user_id', userId);
+
+    if (error) throw new Error(error.message);
+
+    const orders = data || [];
+    const totalSpent =
+      orders.reduce((sum, order) => sum + (order.grand_total || 0), 0) || 0;
+
+    return {
+      totalOrders: orders.length,
+      totalSpent,
+      averageOrderValue: orders.length > 0 ? totalSpent / orders.length : 0,
+    };
   },
 };

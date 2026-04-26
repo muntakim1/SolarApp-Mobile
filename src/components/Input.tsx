@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, Text, StyleSheet, TextInputProps } from 'react-native';
-import { Colors } from '../constants/colors';
+import { colors } from '../constants/colors';
 
 interface InputProps extends TextInputProps {
   label?: string;
@@ -11,10 +11,10 @@ export const Input: React.FC<InputProps> = ({ label, error, style, ...rest }) =>
   const [focused, setFocused] = useState(false);
 
   const borderColor = error
-    ? Colors.error
+    ? colors.error
     : focused
-      ? Colors.primary
-      : Colors.gray200;
+      ? colors.primary
+      : colors.gray200;
 
   return (
     <View style={styles.wrapper}>
@@ -26,7 +26,7 @@ export const Input: React.FC<InputProps> = ({ label, error, style, ...rest }) =>
           focused && !error && styles.focusShadow,
           style,
         ]}
-        placeholderTextColor={Colors.gray500}
+        placeholderTextColor={colors.gray500}
         onFocus={(e) => {
           setFocused(true);
           rest.onFocus?.(e);
@@ -49,21 +49,21 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 13,
     fontWeight: '600',
-    color: Colors.gray700,
+    color: colors.gray700,
     marginBottom: 6,
   },
   input: {
     height: 48,
     borderWidth: 1,
-    borderColor: Colors.gray200,
+    borderColor: colors.gray200,
     borderRadius: 8,
     paddingHorizontal: 15,
     fontSize: 15,
-    color: Colors.dark,
-    backgroundColor: Colors.white,
+    color: colors.dark,
+    backgroundColor: colors.white,
   },
   focusShadow: {
-    shadowColor: Colors.primary,
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.15,
     shadowRadius: 4,
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 12,
-    color: Colors.error,
+    color: colors.error,
     marginTop: 4,
   },
 });

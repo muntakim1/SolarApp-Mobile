@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Alert, Platform } from 'react-native';
 import { surveyService } from '../../services/surveyService';
+import { colors } from '../../constants/colors';
+import { Typography } from '../../constants/typography';
 
 const PROPERTY_TYPES = ['residential', 'commercial', 'industrial', 'agricultural'];
 
@@ -137,27 +139,27 @@ export const SurveyRequestScreen: React.FC<{ navigation: any }> = ({ navigation 
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
+  container: { flex: 1, backgroundColor: colors.background },
   scrollContent: { padding: 20, paddingBottom: 40 },
   progressRow: { flexDirection: 'row', justifyContent: 'center', marginBottom: 24, gap: 20 },
   progressItem: { alignItems: 'center' },
-  progressDot: { width: 28, height: 28, borderRadius: 14, backgroundColor: '#E0E0E0', marginBottom: 6 },
-  progressDotActive: { backgroundColor: '#FF5A5A' },
-  progressLabel: { fontSize: 11, color: '#888' },
-  progressLabelActive: { color: '#FF5A5A', fontWeight: '600' },
-  sectionTitle: { fontSize: 20, fontWeight: 'bold', color: '#1A1A2E', marginBottom: 16 },
-  label: { fontSize: 13, fontWeight: '600', color: '#555', marginBottom: 6, marginTop: 12 },
-  input: { height: 48, borderWidth: 1, borderColor: '#E0E0E0', borderRadius: 8, paddingHorizontal: 15, fontSize: 15 },
+  progressDot: { width: 28, height: 28, borderRadius: 14, backgroundColor: colors.gray300, marginBottom: 6 },
+  progressDotActive: { backgroundColor: colors.primary },
+  progressLabel: { fontSize: 11, color: colors.textSecondary },
+  progressLabelActive: { color: colors.secondary, fontWeight: '600' },
+  sectionTitle: { ...Typography.screenTitle, color: colors.secondary, marginBottom: 16 },
+  label: { ...Typography.label, color: colors.textSecondary, marginBottom: 6, marginTop: 12 },
+  input: { height: 48, borderWidth: 1, borderColor: colors.border, borderRadius: 8, paddingHorizontal: 15, fontSize: 15, backgroundColor: colors.white, color: colors.text },
   chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 4 },
-  chip: { paddingHorizontal: 16, paddingVertical: 10, borderRadius: 20, borderWidth: 1, borderColor: '#E0E0E0', backgroundColor: '#F9F9F9' },
-  chipActive: { borderColor: '#FF5A5A', backgroundColor: '#FFF5F5' },
-  chipText: { fontSize: 13, color: '#555' },
-  chipTextActive: { color: '#FF5A5A', fontWeight: '600' },
+  chip: { paddingHorizontal: 16, paddingVertical: 10, borderRadius: 20, borderWidth: 1, borderColor: colors.border, backgroundColor: colors.white },
+  chipActive: { borderColor: colors.primary, backgroundColor: colors.primaryLight },
+  chipText: { fontSize: 13, color: colors.textSecondary },
+  chipTextActive: { color: colors.secondary, fontWeight: '600' },
   buttonRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 24, gap: 12 },
-  nextBtn: { flex: 1, backgroundColor: '#FF5A5A', paddingVertical: 15, borderRadius: 8, alignItems: 'center', marginTop: 24 },
-  nextBtnText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
-  backBtn: { flex: 1, borderWidth: 1, borderColor: '#E0E0E0', paddingVertical: 15, borderRadius: 8, alignItems: 'center' },
-  backBtnText: { color: '#555', fontSize: 16, fontWeight: '600' },
-  submitBtn: { flex: 1, backgroundColor: '#34C759', paddingVertical: 15, borderRadius: 8, alignItems: 'center' },
-  submitBtnText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
+  nextBtn: { flex: 1, backgroundColor: colors.primary, paddingVertical: 15, borderRadius: 8, alignItems: 'center', marginTop: 24 },
+  nextBtnText: { color: colors.secondary, fontSize: 16, fontWeight: 'bold' },
+  backBtn: { flex: 1, borderWidth: 1, borderColor: colors.border, paddingVertical: 15, borderRadius: 8, alignItems: 'center', backgroundColor: colors.white },
+  backBtnText: { color: colors.textSecondary, fontSize: 16, fontWeight: '600' },
+  submitBtn: { flex: 1, backgroundColor: colors.secondary, paddingVertical: 15, borderRadius: 8, alignItems: 'center' },
+  submitBtnText: { color: colors.primary, fontSize: 16, fontWeight: 'bold' },
 });

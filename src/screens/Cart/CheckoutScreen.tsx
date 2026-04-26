@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { useCartStore } from '../../store/cartStore';
-import { supabase } from '../../services/supabaseClient';
+import { orderService } from '../../services/orderService';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 
@@ -38,57 +38,29 @@ export const CheckoutScreen: React.FC<{ navigation: any }> = ({ navigation }) =>
     }
 
     setLoading(true);
+    try {
+      const order = await orderService.placeOrder({
+        userId: user.id,
+        items: items.map((item) => ({
+          product: {
+            id: item.product.id,
+            name: item.product.name,
+            sku: item.product.sku,
+            price: item.product.price,
+          },
+          quantity: item.quantity,
+        })),
+        deliveryAddress: { street, city, province, postal_code: postalCode },
+        paymentMethod,
+      });
 
-    const orderNumber = `SVZ-${new Date().getFullYear()}-${String(Date.now()).slice(-5)}`;
-
-    const { data: orderData, error: orderError } = await supabase
-      .from('orders')
-      .insert([
-        {
-          user_id: user.id,
-          order_number: orderNumber,
-          status: 'pending',
-          delivery_address: { street, city, province, postal_code: postalCode },
-          payment_method: paymentMethod,
-          payment_status: 'unpaid',
-          subtotal,
-          delivery_fee: deliveryFee,
-          grand_total: grandTotal,
-        },
-      ])
-      .select()
-      .single();
-
-    if (orderError || !orderData) {
-      Alert.alert('Error', orderError?.message || 'Failed to create order.');
+      clearCart();
+      navigation.replace('OrderSuccess', { orderNumber: order.order_number });
+    } catch (err) {
+      Alert.alert('Error', err instanceof Error ? err.message : 'Failed to place order.');
+    } finally {
       setLoading(false);
-      return;
     }
-
-    // Insert order items
-    const orderItems = items.map((item) => ({
-      order_id: orderData.id,
-      product_id: item.product.id,
-      product_snapshot: {
-        name: item.product.name,
-        sku: item.product.sku,
-        price: item.product.price,
-      },
-      quantity: item.quantity,
-      unit_price: item.product.price,
-    }));
-
-    const { error: itemsError } = await supabase.from('order_items').insert(orderItems);
-
-    if (itemsError) {
-      Alert.alert('Error', 'Failed to save order items.');
-      setLoading(false);
-      return;
-    }
-
-    clearCart();
-    setLoading(false);
-    navigation.replace('OrderSuccess', { orderNumber: orderData.order_number });
   };
 
   return (

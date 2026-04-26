@@ -4,6 +4,8 @@ import { OrderListScreen } from '../screens/Orders/OrderListScreen';
 import { OrderDetailScreen } from '../screens/Orders/OrderDetailScreen';
 import { Order } from '../services/orderService';
 
+import { colors } from '../constants/colors';
+
 export type OrdersStackParamList = {
   OrderList: undefined;
   OrderDetail: { order: Order };
@@ -13,7 +15,7 @@ const Stack = createNativeStackNavigator<OrdersStackParamList>();
 
 export const OrdersStack = () => {
   return (
-    <Stack.Navigator screenOptions={{ headerTintColor: '#FF5A5A' }}>
+    <Stack.Navigator screenOptions={{ headerTintColor: colors.secondary }}>
       <Stack.Screen name="OrderList" component={OrderListScreen} options={{ title: 'My Orders' }} />
       <Stack.Screen name="OrderDetail" component={OrderDetailScreen} options={({ route }) => ({ title: route.params.order.order_number })} />
     </Stack.Navigator>

@@ -8,6 +8,8 @@ import { ProfileStack } from './ProfileStack';
 import { HomeScreen } from '../screens/Home/HomeScreen';
 import { useCartStore } from '../store/cartStore';
 
+import { colors } from '../constants/colors';
+
 const Tab = createBottomTabNavigator();
 
 export const AppStack = () => {
@@ -26,8 +28,8 @@ export const AppStack = () => {
 
           return <FontAwesome name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#FF5A5A',
-        tabBarInactiveTintColor: '#888888',
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.gray500,
         headerShown: false,
       })}
     >
@@ -38,11 +40,21 @@ export const AppStack = () => {
         component={CartStack}
         options={{
           tabBarBadge: itemCount > 0 ? itemCount : undefined,
-          tabBarBadgeStyle: { backgroundColor: '#FF5A5A', color: '#fff', fontSize: 11 },
+          tabBarBadgeStyle: { backgroundColor: colors.secondary, color: colors.primary, fontSize: 11 },
         }}
       />
       <Tab.Screen name="Orders" component={OrdersStack} />
-      <Tab.Screen name="Profile" component={ProfileStack} />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileStack}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            if (navigation.isFocused()) {
+              navigation.navigate('Profile', { screen: 'Profile' });
+            }
+          },
+        })}
+      />
     </Tab.Navigator>
   );
 };

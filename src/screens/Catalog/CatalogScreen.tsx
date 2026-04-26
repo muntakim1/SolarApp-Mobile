@@ -12,9 +12,9 @@ import {
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { CatalogStackParamList } from '../../navigation/CatalogStack';
-import { productService, Product } from '../../services/productService';
+import { productService as productSvc, Product } from '../../services/productService';
 import { FontAwesome } from '@expo/vector-icons';
-import { Colors } from '../../constants/colors';
+import { colors } from '../../constants/colors';
 
 type Props = {
   navigation: NativeStackNavigationProp<CatalogStackParamList, 'CatalogList'>;
@@ -47,8 +47,8 @@ export const CatalogScreen: React.FC<Props> = ({ navigation, route }) => {
   const fetchData = async () => {
     try {
       const [productData, catData] = await Promise.all([
-        productService.getProducts(),
-        productService.getCategories(),
+        productSvc.getProducts(),
+        productSvc.getCategories(),
       ]);
       setProducts(productData);
       setCategories(catData as { id: string; name: string; slug: string }[]);
@@ -111,9 +111,9 @@ export const CatalogScreen: React.FC<Props> = ({ navigation, route }) => {
   }, [products, searchQuery, selectedCategory, selectedBrand, sortBy, categories]);
 
   const getStockBadge = (qty: number) => {
-    if (qty === 0) return { text: 'Out of Stock', bg: Colors.errorLight, color: Colors.error };
-    if (qty < 5) return { text: 'Low Stock', bg: Colors.warningLight, color: Colors.warning };
-    return { text: 'In Stock', bg: Colors.successLight, color: Colors.success };
+    if (qty === 0) return { text: 'Out of Stock', bg: colors.errorLight, color: colors.error };
+    if (qty < 5) return { text: 'Low Stock', bg: colors.warningLight, color: colors.warning };
+    return { text: 'In Stock', bg: colors.successLight, color: colors.success };
   };
 
   const renderProduct = ({ item }: { item: Product }) => {
@@ -150,17 +150,17 @@ export const CatalogScreen: React.FC<Props> = ({ navigation, route }) => {
     <View style={styles.container}>
       {/* Search Bar */}
       <View style={styles.searchContainer}>
-        <FontAwesome name="search" size={16} color={Colors.gray500} style={styles.searchIcon} />
+        <FontAwesome name="search" size={16} color={colors.gray500} style={styles.searchIcon} />
         <TextInput
           style={styles.searchInput}
           placeholder="Search products, brands, or SKU..."
           value={searchQuery}
           onChangeText={setSearchQuery}
-          placeholderTextColor={Colors.gray500}
+          placeholderTextColor={colors.gray500}
         />
         {searchQuery ? (
           <TouchableOpacity onPress={() => setSearchQuery('')}>
-            <FontAwesome name="times-circle" size={16} color={Colors.gray300} />
+            <FontAwesome name="times-circle" size={16} color={colors.gray300} />
           </TouchableOpacity>
         ) : null}
       </View>
@@ -169,6 +169,7 @@ export const CatalogScreen: React.FC<Props> = ({ navigation, route }) => {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
+        style={styles.tabsScroll}
         contentContainerStyle={styles.tabsContainer}
       >
         <TouchableOpacity
@@ -251,7 +252,7 @@ export const CatalogScreen: React.FC<Props> = ({ navigation, route }) => {
 
       {/* Product Grid */}
       {loading ? (
-        <ActivityIndicator size="large" color={Colors.primary} style={{ marginTop: 50 }} />
+        <ActivityIndicator size="large" color={colors.primary} style={{ marginTop: 50 }} />
       ) : (
         <FlatList
           data={filteredProducts}
@@ -263,7 +264,7 @@ export const CatalogScreen: React.FC<Props> = ({ navigation, route }) => {
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
-              <FontAwesome name="search" size={40} color={Colors.gray300} />
+              <FontAwesome name="search" size={48} color={colors.primary} style={{ opacity: 0.5 }} />
               <Text style={styles.emptyText}>No products found</Text>
               <Text style={styles.emptySubtext}>Try adjusting your filters or search</Text>
             </View>
@@ -275,13 +276,13 @@ export const CatalogScreen: React.FC<Props> = ({ navigation, route }) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.lightGray },
+  container: { flex: 1, backgroundColor: colors.background },
 
   // Search
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.white,
+    backgroundColor: colors.white,
     margin: 15,
     marginBottom: 8,
     borderRadius: 10,
@@ -293,33 +294,41 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
   },
   searchIcon: { marginRight: 10 },
-  searchInput: { flex: 1, height: 48, fontSize: 15, color: Colors.dark },
+  searchInput: { flex: 1, height: 48, fontSize: 15, color: colors.dark },
 
   // Tabs
+  tabsScroll: {
+    flexGrow: 0,
+    backgroundColor: colors.surface,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.gray200,
+  },
   tabsContainer: {
     paddingHorizontal: 15,
-    paddingBottom: 8,
-    gap: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   tab: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: Colors.white,
+    paddingHorizontal: 18,
+    paddingVertical: 10,
+    borderRadius: 25,
+    backgroundColor: colors.gray100,
     borderWidth: 1,
-    borderColor: Colors.gray200,
+    borderColor: colors.gray200,
+    marginRight: 8,
   },
   tabActive: {
-    backgroundColor: Colors.primary,
-    borderColor: Colors.primary,
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
   },
   tabText: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '600',
-    color: Colors.gray700,
+    color: colors.textSecondary,
   },
   tabTextActive: {
-    color: Colors.white,
+    color: colors.secondary, // Black text on yellow for contrast
   },
 
   // Brand Chips & Sort
@@ -331,45 +340,45 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   brandChip: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 14,
-    backgroundColor: Colors.white,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: colors.surface,
     borderWidth: 1,
-    borderColor: Colors.gray200,
-    marginRight: 6,
+    borderColor: colors.gray200,
+    marginRight: 8,
   },
   brandChipActive: {
-    backgroundColor: Colors.primaryLight,
-    borderColor: Colors.primary,
+    backgroundColor: colors.primaryLight,
+    borderColor: colors.primary,
   },
   brandChipText: {
     fontSize: 11,
     fontWeight: '600',
-    color: Colors.gray700,
+    color: colors.gray700,
   },
   brandChipTextActive: {
-    color: Colors.primary,
+    color: colors.primary,
   },
   sortRow: {
     flexDirection: 'row',
     gap: 4,
   },
   sortBtn: {
-    paddingHorizontal: 8,
-    paddingVertical: 5,
-    borderRadius: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 8,
   },
   sortBtnActive: {
-    backgroundColor: Colors.dark,
+    backgroundColor: colors.dark,
   },
   sortBtnText: {
     fontSize: 11,
-    color: Colors.gray500,
+    color: colors.gray500,
     fontWeight: '600',
   },
   sortBtnTextActive: {
-    color: Colors.white,
+    color: colors.white,
   },
 
   // Results bar
@@ -380,14 +389,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 6,
   },
-  resultsText: { fontSize: 12, color: Colors.gray500 },
-  clearFilters: { fontSize: 12, color: Colors.primary, fontWeight: '600' },
+  resultsText: { fontSize: 12, color: colors.gray500 },
+  clearFilters: { fontSize: 12, color: colors.primary, fontWeight: '600' },
 
   // Grid
   list: { paddingHorizontal: 10, paddingBottom: 20 },
   row: { justifyContent: 'space-between' },
   card: {
-    backgroundColor: Colors.white,
+    backgroundColor: colors.white,
     width: '48%',
     borderRadius: 12,
     marginBottom: 15,
@@ -402,7 +411,7 @@ const styles = StyleSheet.create({
   image: {
     width: '100%',
     height: 140,
-    backgroundColor: Colors.gray100,
+    backgroundColor: colors.gray100,
     resizeMode: 'cover',
   },
   stockBadge: {
@@ -420,7 +429,7 @@ const styles = StyleSheet.create({
   cardBody: { padding: 12 },
   brand: {
     fontSize: 11,
-    color: Colors.gray500,
+    color: colors.gray500,
     marginBottom: 3,
     textTransform: 'uppercase',
     fontWeight: '700',
@@ -429,14 +438,14 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 13,
     fontWeight: '600',
-    color: Colors.dark,
+    color: colors.dark,
     marginBottom: 8,
     height: 36,
   },
   price: {
     fontSize: 15,
     fontWeight: 'bold',
-    color: Colors.primary,
+    color: colors.primary,
   },
 
   // Empty
@@ -448,12 +457,12 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 16,
     fontWeight: '600',
-    color: Colors.dark,
+    color: colors.dark,
     marginTop: 16,
   },
   emptySubtext: {
     fontSize: 13,
-    color: Colors.gray500,
+    color: colors.gray500,
     marginTop: 4,
     textAlign: 'center',
   },

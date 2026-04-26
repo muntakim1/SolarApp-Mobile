@@ -8,7 +8,7 @@ import {
   TextStyle,
   TouchableOpacityProps,
 } from 'react-native';
-import { Colors } from '../constants/colors';
+import { colors } from '../constants/colors';
 
 interface ButtonProps extends TouchableOpacityProps {
   title: string;
@@ -53,7 +53,7 @@ export const Button: React.FC<ButtonProps> = ({
       {loading ? (
         <ActivityIndicator
           size="small"
-          color={variant === 'secondary' ? Colors.primary : Colors.white}
+          color={variant === 'secondary' ? colors.primary : colors.white}
         />
       ) : (
         <Text style={textStyles}>{title}</Text>
@@ -74,15 +74,15 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   primary: {
-    backgroundColor: Colors.primary,
+    backgroundColor: colors.primary,
   },
   secondary: {
     backgroundColor: 'transparent',
     borderWidth: 1.5,
-    borderColor: Colors.primary,
+    borderColor: colors.primary,
   },
   destructive: {
-    backgroundColor: Colors.error,
+    backgroundColor: colors.error,
   },
   disabled: {
     opacity: 0.5,
@@ -92,12 +92,12 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   primaryText: {
-    color: Colors.white,
+    color: colors.white,
   },
   secondaryText: {
-    color: Colors.primary,
+    color: colors.primary,
   },
   destructiveText: {
-    color: Colors.white,
+    color: colors.white,
   },
 });

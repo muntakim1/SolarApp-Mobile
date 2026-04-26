@@ -12,22 +12,24 @@ import {
 } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { productService, Product } from '../../services/productService';
-import { Colors } from '../../constants/colors';
+import { colors } from '../../constants/colors';
+import { Logo } from '../../components/Logo';
+import { productService as productSvc, Product } from '../../services/productService';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const CATEGORIES = [
-  { name: 'Solar Panels', slug: 'solar-panels', icon: 'sun-o' as const, color: '#FF8B5A' },
-  { name: 'Inverters', slug: 'inverters', icon: 'bolt' as const, color: '#FF5A5A' },
-  { name: 'Batteries', slug: 'batteries', icon: 'battery-full' as const, color: '#34C759' },
-  { name: 'VED', slug: 'ved', icon: 'plug' as const, color: '#1565C0' },
+  { name: 'Solar Panels', slug: 'solar-panels', icon: 'sun-o' as const, color: colors.primary },
+  { name: 'Inverters', slug: 'inverters', icon: 'bolt' as const, color: colors.secondary },
+  { name: 'Batteries', slug: 'batteries', icon: 'battery-full' as const, color: colors.success },
+  { name: 'VED', slug: 'ved', icon: 'plug' as const, color: colors.info },
 ];
 
 const QUICK_LINKS = [
-  { label: 'My Orders', icon: 'list-alt' as const, tab: 'Orders', color: '#FF5A5A' },
-  { label: 'Get a Quote', icon: 'clipboard' as const, tab: 'Profile', screen: 'SurveyRequest', color: '#FF8B5A' },
-  { label: 'Support', icon: 'life-ring' as const, tab: 'Profile', screen: 'Helpline', color: '#34C759' },
+  { label: 'My Orders', icon: 'list-alt' as const, tab: 'Orders', color: colors.primary },
+  { label: 'Get a Quote', icon: 'clipboard' as const, tab: 'Profile', screen: 'SurveyRequest', color: colors.secondary },
+  { label: 'Support', icon: 'life-ring' as const, tab: 'Profile', screen: 'Helpline', color: colors.success },
+  { label: 'About', icon: 'info-circle' as const, tab: 'Profile', screen: 'About', color: colors.accent },
 ];
 
 export const HomeScreen: React.FC = () => {
@@ -41,7 +43,7 @@ export const HomeScreen: React.FC = () => {
 
   const loadFeatured = async () => {
     try {
-      const products = await productService.getProducts();
+      const products = await productSvc.getProducts();
       setFeaturedProducts(products.slice(0, 8));
     } catch (e) {
       console.error(e);
@@ -62,8 +64,8 @@ export const HomeScreen: React.FC = () => {
       {/* Hero Section */}
       <View style={styles.hero}>
         <View style={styles.heroOverlay}>
+          <Logo size={120} />
           <Text style={styles.heroTagline}>Power Your Future</Text>
-          <Text style={styles.heroTitle}>SolventZ</Text>
           <Text style={styles.heroSubtitle}>
             Premium solar solutions for homes, businesses, and industries
           </Text>
@@ -110,7 +112,7 @@ export const HomeScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
         {loading ? (
-          <ActivityIndicator size="large" color={Colors.primary} style={{ marginVertical: 40 }} />
+          <ActivityIndicator size="large" color={colors.primary} style={{ marginVertical: 40 }} />
         ) : (
           <FlatList
             data={featuredProducts}
@@ -186,7 +188,7 @@ export const HomeScreen: React.FC = () => {
 
       {/* Brand Footer */}
       <View style={styles.brandFooter}>
-        <FontAwesome name="sun-o" size={20} color={Colors.primary} />
+        <FontAwesome name="sun-o" size={20} color={colors.primary} />
         <Text style={styles.brandFooterText}>SolventZ Solar Solutions</Text>
         <Text style={styles.brandFooterSub}>Powering Pakistan's sustainable future</Text>
       </View>
@@ -195,49 +197,54 @@ export const HomeScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.lightGray },
+  container: { flex: 1, backgroundColor: colors.background },
 
   // Hero
   hero: {
-    backgroundColor: Colors.dark,
+    backgroundColor: colors.primary,
     paddingTop: 60,
     paddingBottom: 36,
     paddingHorizontal: 24,
     borderBottomLeftRadius: 28,
     borderBottomRightRadius: 28,
+    alignItems: 'center',
   },
-  heroOverlay: {},
+  heroOverlay: { alignItems: 'center' },
   heroTagline: {
     fontSize: 12,
     fontWeight: '700',
-    color: Colors.accent,
+    color: colors.secondary,
     textTransform: 'uppercase',
     letterSpacing: 2,
-    marginBottom: 6,
+    marginBottom: 12,
+    marginTop: 20,
+    opacity: 0.8,
   },
   heroTitle: {
     fontSize: 36,
     fontWeight: 'bold',
-    color: Colors.white,
+    color: colors.secondary,
     marginBottom: 8,
   },
   heroSubtitle: {
     fontSize: 15,
-    color: 'rgba(255,255,255,0.7)',
+    color: colors.secondary,
     lineHeight: 22,
     marginBottom: 20,
+    textAlign: 'center',
+    opacity: 0.7,
   },
   heroCTA: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.primary,
-    alignSelf: 'flex-start',
+    backgroundColor: colors.secondary,
+    alignSelf: 'center',
     paddingHorizontal: 22,
     paddingVertical: 13,
     borderRadius: 8,
   },
   heroCTAText: {
-    color: Colors.white,
+    color: colors.primary,
     fontWeight: 'bold',
     fontSize: 15,
   },
@@ -253,12 +260,12 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: Colors.dark,
+    color: colors.dark,
     marginBottom: 14,
   },
   seeAll: {
     fontSize: 13,
-    color: Colors.primary,
+    color: colors.primaryDark,
     fontWeight: '600',
     marginBottom: 14,
   },
@@ -272,7 +279,7 @@ const styles = StyleSheet.create({
   categoryCard: {
     width: (SCREEN_WIDTH - 32 - 12 * 3) / 4,
     alignItems: 'center',
-    backgroundColor: Colors.white,
+    backgroundColor: colors.white,
     borderRadius: 12,
     paddingVertical: 16,
     shadowColor: '#000',
@@ -292,7 +299,7 @@ const styles = StyleSheet.create({
   categoryName: {
     fontSize: 11,
     fontWeight: '600',
-    color: Colors.dark,
+    color: colors.dark,
     textAlign: 'center',
   },
 
@@ -300,7 +307,7 @@ const styles = StyleSheet.create({
   productScroll: { paddingRight: 16 },
   productCard: {
     width: 160,
-    backgroundColor: Colors.white,
+    backgroundColor: colors.white,
     borderRadius: 12,
     overflow: 'hidden',
     marginRight: 12,
@@ -313,21 +320,21 @@ const styles = StyleSheet.create({
   productImage: {
     width: '100%',
     height: 120,
-    backgroundColor: Colors.gray100,
+    backgroundColor: colors.gray100,
     resizeMode: 'cover',
   },
   productBody: { padding: 10 },
   productBrand: {
     fontSize: 10,
     fontWeight: '700',
-    color: Colors.gray500,
+    color: colors.gray500,
     textTransform: 'uppercase',
     marginBottom: 2,
   },
   productName: {
     fontSize: 13,
     fontWeight: '600',
-    color: Colors.dark,
+    color: colors.dark,
     height: 36,
     marginBottom: 6,
   },
@@ -339,28 +346,28 @@ const styles = StyleSheet.create({
   productPrice: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: Colors.primary,
+    color: colors.secondary,
   },
   oosTag: {
-    backgroundColor: Colors.errorLight,
+    backgroundColor: colors.errorLight,
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,
   },
-  oosText: { fontSize: 9, color: Colors.error, fontWeight: '700' },
+  oosText: { fontSize: 9, color: colors.error, fontWeight: '700' },
   lowStockTag: {
-    backgroundColor: Colors.warningLight,
+    backgroundColor: colors.warningLight,
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,
   },
-  lowStockText: { fontSize: 9, color: Colors.warning, fontWeight: '700' },
+  lowStockText: { fontSize: 9, color: colors.warning, fontWeight: '700' },
 
   // Quick Links
   quickLinksRow: { flexDirection: 'row', gap: 12 },
   quickLinkCard: {
     flex: 1,
-    backgroundColor: Colors.white,
+    backgroundColor: colors.white,
     borderRadius: 12,
     paddingVertical: 18,
     alignItems: 'center',
@@ -381,7 +388,7 @@ const styles = StyleSheet.create({
   quickLinkLabel: {
     fontSize: 12,
     fontWeight: '600',
-    color: Colors.dark,
+    color: colors.dark,
   },
 
   // Brand Footer
@@ -393,12 +400,12 @@ const styles = StyleSheet.create({
   brandFooterText: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: Colors.dark,
+    color: colors.dark,
     marginTop: 8,
   },
   brandFooterSub: {
     fontSize: 12,
-    color: Colors.gray500,
+    color: colors.gray500,
     marginTop: 4,
     marginBottom: 16,
   },

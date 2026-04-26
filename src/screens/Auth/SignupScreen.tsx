@@ -19,16 +19,18 @@ import { Typography } from '../../constants/typography';
 import { Logo } from '../../components/Logo';
 
 type Props = {
-  navigation: NativeStackNavigationProp<AuthStackParamList, 'Login'>;
+  navigation: NativeStackNavigationProp<AuthStackParamList, 'Signup'>;
 };
 
-export const LoginScreen: React.FC<Props> = ({ navigation }) => {
+export const SignupScreen: React.FC<Props> = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async () => {
+  const handleSignup = async () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email || !emailRegex.test(email)) {
       Alert.alert('Error', 'Please enter a valid email address.');
@@ -38,15 +40,36 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
       Alert.alert('Error', 'Password must be at least 6 characters.');
       return;
     }
+    if (password !== confirmPassword) {
+      Alert.alert('Error', 'Passwords do not match.');
+      return;
+    }
 
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { role: 'user' },
+      },
+    });
     setLoading(false);
 
     if (error) {
-      Alert.alert('Login Failed', error.message);
+      Alert.alert('Sign Up Failed', error.message);
+      return;
     }
-    // On success, RootNavigator's onAuthStateChange switches to AppStack automatically.
+
+    // If email confirmation is required, the session will be null.
+    if (data.session) {
+      // Auto-confirmed — RootNavigator switches to AppStack automatically.
+    } else {
+      Alert.alert(
+        'Confirm Your Email',
+        'We sent a confirmation link to ' + email + '. Please check your inbox and verify your email before signing in.',
+        [{ text: 'OK', onPress: () => navigation.navigate('Login') }]
+      );
+    }
   };
 
   return (
@@ -58,8 +81,8 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
         {/* Header */}
         <View style={styles.header}>
           <Logo size={100} />
-          <Text style={styles.title}>Welcome Back</Text>
-          <Text style={styles.subtitle}>Sign in to your SolventZ account</Text>
+          <Text style={styles.title}>Create Account</Text>
+          <Text style={styles.subtitle}>Join SolventZ and power your future</Text>
         </View>
 
         {/* Form */}
@@ -80,7 +103,7 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
           <View style={styles.passwordContainer}>
             <TextInput
               style={styles.passwordInput}
-              placeholder="Enter your password"
+              placeholder="At least 6 characters"
               placeholderTextColor="#bbb"
               secureTextEntry={!showPassword}
               autoCapitalize="none"
@@ -100,20 +123,44 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
             </TouchableOpacity>
           </View>
 
+          <Text style={styles.label}>Confirm Password</Text>
+          <View style={styles.passwordContainer}>
+            <TextInput
+              style={styles.passwordInput}
+              placeholder="Repeat your password"
+              placeholderTextColor="#bbb"
+              secureTextEntry={!showConfirm}
+              autoCapitalize="none"
+              autoCorrect={false}
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+            />
+            <TouchableOpacity
+              style={styles.eyeBtn}
+              onPress={() => setShowConfirm((v) => !v)}
+            >
+              <MaterialIcons
+                name={showConfirm ? 'visibility-off' : 'visibility'}
+                size={22}
+                color="#888"
+              />
+            </TouchableOpacity>
+          </View>
+
           <TouchableOpacity
             style={[styles.button, loading && styles.buttonDisabled]}
-            onPress={handleLogin}
+            onPress={handleSignup}
             disabled={loading}
           >
-            <Text style={styles.buttonText}>{loading ? 'Signing in...' : 'Sign In'}</Text>
+            <Text style={styles.buttonText}>{loading ? 'Creating account...' : 'Sign Up'}</Text>
           </TouchableOpacity>
         </View>
 
         {/* Footer */}
         <View style={styles.footer}>
-          <Text style={styles.footerText}>Don't have an account? </Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-            <Text style={styles.footerLink}>Sign Up</Text>
+          <Text style={styles.footerText}>Already have an account? </Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+            <Text style={styles.footerLink}>Sign In</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

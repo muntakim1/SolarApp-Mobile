@@ -8,6 +8,8 @@ import { setAuthSession, setAuthLoading } from '../store/slices/authSlice';
 import { RootState } from '../store';
 import { View, ActivityIndicator } from 'react-native';
 
+import { colors } from '../constants/colors';
+
 export const RootNavigator = () => {
   const dispatch = useDispatch();
   const { isAuthenticated, isLoading } = useSelector((state: RootState) => state.auth);
@@ -28,12 +30,13 @@ export const RootNavigator = () => {
 
   if (isLoading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color="#FF5A5A" />
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background }}>
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }
 
+console.log('Rendering RootNavigator, isAuthenticated:', isAuthenticated);
   return (
     <NavigationContainer>
       {isAuthenticated ? <AppStack /> : <AuthStack />}

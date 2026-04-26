@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Linking, ScrollView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { FontAwesome } from '@expo/vector-icons';
+import { colors } from '../../constants/colors';
 
 const FAQ_ITEMS = [
   { q: 'How long does delivery take?', a: 'Standard delivery takes 3-7 business days depending on your location. Express delivery is available for select areas.' },
@@ -11,6 +13,7 @@ const FAQ_ITEMS = [
 ];
 
 export const HelplineScreen: React.FC = () => {
+  const navigation = useNavigation();
   const [expandedIdx, setExpandedIdx] = React.useState<number | null>(null);
 
   const handleCall = () => Linking.openURL('tel:+923001234567');
@@ -19,7 +22,13 @@ export const HelplineScreen: React.FC = () => {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
-      <Text style={styles.title}>Help & Support</Text>
+      <TouchableOpacity 
+        style={styles.backButton} 
+        onPress={() => navigation.goBack()}
+      >
+        <FontAwesome name="chevron-left" size={16} color={colors.secondary} />
+        <Text style={styles.backText}>Back to Profile</Text>
+      </TouchableOpacity>
       <Text style={styles.subtitle}>We're here to help. Reach out through any channel below.</Text>
 
       {/* Contact Cards */}
@@ -97,4 +106,16 @@ const styles = StyleSheet.create({
   faqHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   faqQuestion: { fontSize: 14, fontWeight: '600', color: '#1A1A2E', flex: 1, marginRight: 10 },
   faqAnswer: { fontSize: 13, color: '#555', lineHeight: 20, marginTop: 10 },
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+    paddingVertical: 8,
+  },
+  backText: {
+    fontSize: 14,
+    color: colors.secondary,
+    fontWeight: '600',
+    marginLeft: 8,
+  },
 });

@@ -4,6 +4,8 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
 import { CatalogStackParamList } from '../../navigation/CatalogStack';
 import { useCartStore } from '../../store/cartStore';
+import { colors } from '../../constants/colors';
+import { Typography } from '../../constants/typography';
 
 const { width } = Dimensions.get('window');
 
@@ -88,26 +90,26 @@ export const ProductDetailScreen: React.FC<Props> = ({ route }) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
+  container: { flex: 1, backgroundColor: colors.background },
   scrollContent: { paddingBottom: 100 },
   imageContainer: { width, height: width },
-  image: { width, height: width, resizeMode: 'cover', backgroundColor: '#F5F5F5' },
+  image: { width, height: width, resizeMode: 'cover', backgroundColor: colors.gray100 },
   detailsContainer: { padding: 20 },
-  brand: { fontSize: 13, color: '#888', textTransform: 'uppercase', fontWeight: 'bold', marginBottom: 4 },
-  name: { fontSize: 22, fontWeight: 'bold', color: '#1A1A2E', marginBottom: 12 },
+  brand: { fontSize: 13, color: colors.gray500, textTransform: 'uppercase', fontWeight: 'bold', marginBottom: 4 },
+  name: { fontSize: 22, fontWeight: 'bold', color: colors.secondary, marginBottom: 12 },
   priceRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 },
-  price: { fontSize: 24, fontWeight: 'bold', color: '#FF5A5A' },
-  inStock: { fontSize: 12, fontWeight: 'bold', color: '#34C759', backgroundColor: '#E8F8EE', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 4 },
-  outOfStock: { fontSize: 12, fontWeight: 'bold', color: '#FF3B30', backgroundColor: '#FFEBEA', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 4 },
-  divider: { height: 1, backgroundColor: '#F0F0F0', marginVertical: 12, width: '100%' },
-  sectionTitle: { fontSize: 18, fontWeight: 'bold', color: '#1A1A2E', marginTop: 15, marginBottom: 10 },
-  description: { fontSize: 14, color: '#555', lineHeight: 22 },
-  specsContainer: { marginTop: 5, backgroundColor: '#F9F9F9', borderRadius: 8, overflow: 'hidden' },
-  specRow: { flexDirection: 'row', paddingVertical: 12, paddingHorizontal: 15, borderBottomWidth: 1, borderBottomColor: '#F0F0F0' },
-  specKey: { flex: 1, fontSize: 13, color: '#555', fontWeight: '500' },
-  specValue: { flex: 1, fontSize: 13, color: '#1A1A2E', fontWeight: '600', textAlign: 'right' },
-  bottomBar: { position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: '#fff', padding: 20, borderTopWidth: 1, borderTopColor: '#F0F0F0', shadowColor: '#000', shadowOffset: { width: 0, height: -2 }, shadowOpacity: 0.05, shadowRadius: 5, elevation: 10 },
-  button: { backgroundColor: '#FF5A5A', paddingVertical: 16, borderRadius: 8, alignItems: 'center' },
-  buttonDisabled: { backgroundColor: '#FFC8C8' },
-  buttonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' }
+  price: { fontSize: 24, fontWeight: 'bold', color: colors.secondary },
+  inStock: { fontSize: 12, fontWeight: 'bold', color: colors.success, backgroundColor: colors.successLight, paddingHorizontal: 8, paddingVertical: 4, borderRadius: 4 },
+  outOfStock: { fontSize: 12, fontWeight: 'bold', color: colors.error, backgroundColor: colors.errorLight, paddingHorizontal: 8, paddingVertical: 4, borderRadius: 4 },
+  divider: { height: 1, backgroundColor: colors.border, marginVertical: 12, width: '100%' },
+  sectionTitle: { fontSize: 18, fontWeight: 'bold', color: colors.secondary, marginTop: 15, marginBottom: 10 },
+  description: { fontSize: 14, color: colors.text, lineHeight: 22 },
+  specsContainer: { marginTop: 5, backgroundColor: colors.white, borderRadius: 8, overflow: 'hidden', borderWidth: 1, borderColor: colors.border },
+  specRow: { flexDirection: 'row', paddingVertical: 12, paddingHorizontal: 15, borderBottomWidth: 1, borderBottomColor: colors.border },
+  specKey: { flex: 1, fontSize: 13, color: colors.textSecondary, fontWeight: '500' },
+  specValue: { flex: 1, fontSize: 13, color: colors.secondary, fontWeight: '600', textAlign: 'right' },
+  bottomBar: { position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: colors.surface, padding: 20, borderTopWidth: 1, borderTopColor: colors.border, shadowColor: '#000', shadowOffset: { width: 0, height: -2 }, shadowOpacity: 0.05, shadowRadius: 5, elevation: 10 },
+  button: { backgroundColor: colors.primary, paddingVertical: 16, borderRadius: 8, alignItems: 'center' },
+  buttonDisabled: { opacity: 0.5 },
+  buttonText: { color: colors.secondary, fontSize: 16, fontWeight: 'bold' }
 });

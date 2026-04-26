@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-nat
 import { RouteProp } from '@react-navigation/native';
 import { orderService, Order, OrderItem } from '../../services/orderService';
 import { OrdersStackParamList } from '../../navigation/OrdersStack';
+import { colors } from '../../constants/colors';
+import { Typography } from '../../constants/typography';
 
 const TIMELINE_STEPS = ['pending', 'processing', 'packed', 'shipped', 'delivered'];
 
@@ -71,7 +73,7 @@ export const OrderDetailScreen: React.FC<Props> = ({ route }) => {
       {/* Items */}
       <Text style={styles.sectionTitle}>Items</Text>
       {loading ? (
-        <ActivityIndicator size="small" color="#FF5A5A" />
+        <ActivityIndicator size="small" color={colors.primary} />
       ) : (
         items.map((item) => (
           <View key={item.id} style={styles.itemRow}>
@@ -112,35 +114,35 @@ export const OrderDetailScreen: React.FC<Props> = ({ route }) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F5F5F5' },
+  container: { flex: 1, backgroundColor: colors.background },
   scrollContent: { padding: 16, paddingBottom: 40 },
-  headerCard: { backgroundColor: '#fff', borderRadius: 12, padding: 20, marginBottom: 16, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 3, elevation: 2 },
-  orderNumber: { fontSize: 20, fontWeight: 'bold', color: '#1A1A2E' },
-  date: { fontSize: 13, color: '#888', marginTop: 4 },
-  sectionTitle: { fontSize: 16, fontWeight: 'bold', color: '#1A1A2E', marginBottom: 12, marginTop: 16 },
-  timelineContainer: { backgroundColor: '#fff', borderRadius: 12, padding: 20, marginBottom: 16, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 3, elevation: 2 },
+  headerCard: { backgroundColor: colors.surface, borderRadius: 12, padding: 20, marginBottom: 16, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 3, elevation: 2 },
+  orderNumber: { fontSize: 20, fontWeight: 'bold', color: colors.secondary },
+  date: { fontSize: 13, color: colors.textSecondary, marginTop: 4 },
+  sectionTitle: { fontSize: 16, fontWeight: 'bold', color: colors.secondary, marginBottom: 12, marginTop: 16 },
+  timelineContainer: { backgroundColor: colors.surface, borderRadius: 12, padding: 20, marginBottom: 16, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 3, elevation: 2 },
   timeline: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' },
   timelineStep: { alignItems: 'center', flex: 1 },
-  dot: { width: 16, height: 16, borderRadius: 8, backgroundColor: '#E0E0E0', zIndex: 1 },
-  dotComplete: { backgroundColor: '#34C759' },
-  dotCurrent: { backgroundColor: '#FF5A5A', borderWidth: 3, borderColor: '#FFD4D4', width: 20, height: 20, borderRadius: 10 },
-  line: { position: 'absolute', top: 7, left: '50%', right: '-50%', height: 2, backgroundColor: '#E0E0E0' },
-  lineComplete: { backgroundColor: '#34C759' },
-  stepLabel: { fontSize: 10, color: '#888', marginTop: 6, textAlign: 'center' },
-  stepLabelComplete: { color: '#1A1A2E', fontWeight: '600' },
-  cancelledBanner: { backgroundColor: '#FFEBEE', padding: 16, borderRadius: 12, marginBottom: 16, alignItems: 'center' },
-  cancelledText: { color: '#C62828', fontSize: 14, fontWeight: '600' },
-  itemRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', padding: 14, borderRadius: 10, marginBottom: 8 },
-  itemName: { fontSize: 14, fontWeight: '600', color: '#1A1A2E' },
-  itemSku: { fontSize: 11, color: '#888', marginTop: 2 },
-  itemQty: { fontSize: 14, color: '#888', marginHorizontal: 12 },
-  itemTotal: { fontSize: 14, fontWeight: '600', color: '#1A1A2E' },
-  divider: { height: 1, backgroundColor: '#E0E0E0', marginVertical: 16 },
+  dot: { width: 14, height: 14, borderRadius: 7, backgroundColor: colors.gray300, zIndex: 1 },
+  dotComplete: { backgroundColor: colors.success },
+  dotCurrent: { backgroundColor: colors.primary, borderWidth: 3, borderColor: colors.secondary, width: 18, height: 18, borderRadius: 9 },
+  line: { position: 'absolute', top: 7, left: '50%', right: '-50%', height: 2, backgroundColor: colors.gray300 },
+  lineComplete: { backgroundColor: colors.success },
+  stepLabel: { fontSize: 10, color: colors.textSecondary, marginTop: 8, textAlign: 'center' },
+  stepLabelComplete: { color: colors.secondary, fontWeight: '600' },
+  cancelledBanner: { backgroundColor: colors.errorLight, padding: 16, borderRadius: 12, marginBottom: 16, alignItems: 'center' },
+  cancelledText: { color: colors.error, fontSize: 14, fontWeight: '600' },
+  itemRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.surface, padding: 14, borderRadius: 10, marginBottom: 8 },
+  itemName: { fontSize: 14, fontWeight: '600', color: colors.secondary },
+  itemSku: { fontSize: 11, color: colors.textSecondary, marginTop: 2 },
+  itemQty: { fontSize: 14, color: colors.textSecondary, marginHorizontal: 12 },
+  itemTotal: { fontSize: 14, fontWeight: '600', color: colors.secondary },
+  divider: { height: 1, backgroundColor: colors.border, marginVertical: 16 },
   totalRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 },
-  totalLabel: { fontSize: 14, color: '#888' },
-  totalValue: { fontSize: 14, color: '#1A1A2E' },
-  grandTotalLabel: { fontSize: 16, fontWeight: 'bold', color: '#1A1A2E' },
-  grandTotalValue: { fontSize: 18, fontWeight: 'bold', color: '#FF5A5A' },
-  addressCard: { backgroundColor: '#fff', padding: 16, borderRadius: 12, marginBottom: 16 },
-  addressText: { fontSize: 14, color: '#555', lineHeight: 22 },
+  totalLabel: { fontSize: 14, color: colors.textSecondary },
+  totalValue: { fontSize: 14, color: colors.secondary },
+  grandTotalLabel: { fontSize: 16, fontWeight: 'bold', color: colors.secondary },
+  grandTotalValue: { fontSize: 18, fontWeight: 'bold', color: colors.primaryDark },
+  addressCard: { backgroundColor: colors.surface, padding: 16, borderRadius: 12, marginBottom: 16 },
+  addressText: { fontSize: 14, color: colors.text, lineHeight: 22 },
 });
