@@ -1,18 +1,7 @@
-import { useEffect, useRef } from 'react';
-import * as Notifications from 'expo-notifications';
+import { useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import Toast from 'react-native-toast-message';
 import { useNotificationPreferences, NotificationType } from '../store/notificationPreferencesStore';
-
-export const configureNotifications = () => {
-  Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-      shouldShowBanner: true,
-      shouldShowList: true,
-      shouldPlaySound: true,
-      shouldSetBadge: true,
-    }),
-  });
-};
 
 interface NotificationData {
   [key: string]: unknown;
@@ -21,40 +10,24 @@ interface NotificationData {
   relatedId?: string;
 }
 
-export const useRealtimeNotifications = () => {
-  const navigation = useNavigation();
-  const notificationListener = useRef<Notifications.EventSubscription | null>(null);
-  const responseListener = useRef<Notifications.EventSubscription | null>(null);
-  const { isNotificationEnabled } = useNotificationPreferences();
-
-  useEffect(() => {
-    requestNotificationPermissions();
-
-    notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
-      console.log('[Notifications] Received:', notification);
-    });
-
-    responseListener.current = Notifications.addNotificationResponseReceivedListener((response) => {
-      handleNotificationResponse(response, navigation, isNotificationEnabled);
-    });
-
-    return () => {
-      notificationListener.current?.remove();
-      responseListener.current?.remove();
-    };
-  }, [navigation, isNotificationEnabled]);
-
-  return { sendLocalNotification, scheduleLocalNotification };
+export const configureNotifications = () => {
+  // No-op for Toast
 };
 
 export const requestNotificationPermissions = async (): Promise<boolean> => {
-  try {
-    const { status } = await Notifications.requestPermissionsAsync();
-    return status === 'granted';
-  } catch (error) {
-    console.warn('[Notifications] Error requesting permissions:', error);
-    return false;
-  }
+  return true; // No-op
+};
+
+let globalNavigation: any = null;
+
+export const useRealtimeNotifications = () => {
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    globalNavigation = navigation;
+  }, [navigation]);
+
+  return { sendLocalNotification, scheduleLocalNotification };
 };
 
 export const sendLocalNotification = async (
@@ -65,12 +38,24 @@ export const sendLocalNotification = async (
   try {
     if (data?.type) {
       const { isNotificationEnabled } = useNotificationPreferences.getState();
-      if (!isNotificationEnabled(data.type as NotificationType)) return;
+      const typedType = data.type as NotificationType;
+      const isPreferenceType = Object.values(NotificationType).includes(typedType);
+      if (isPreferenceType && !isNotificationEnabled(typedType)) return;
     }
 
-    await Notifications.scheduleNotificationAsync({
-      content: { title, body, data: data as Record<string, unknown>, sound: 'default', badge: 1 },
-      trigger: null,
+    Toast.show({
+      type: 'info',
+      text1: title,
+      text2: body,
+      position: 'top',
+      visibilityTime: 4000,
+      autoHide: true,
+      onPress: () => {
+        if (data && globalNavigation) {
+           handleNotificationResponse(data, globalNavigation);
+        }
+        Toast.hide();
+      }
     });
   } catch (error) {
     console.warn('[Notifications] Error sending notification:', error);
@@ -83,27 +68,16 @@ export const scheduleLocalNotification = async (
   delaySeconds: number,
   data?: NotificationData
 ): Promise<void> => {
-  try {
-    await Notifications.scheduleNotificationAsync({
-      content: { title, body, data: data as Record<string, unknown>, sound: 'default', badge: 1 },
-      trigger: { type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL, seconds: delaySeconds },
-    });
-  } catch (error) {
-    console.warn('[Notifications] Error scheduling notification:', error);
-  }
+  setTimeout(() => {
+    sendLocalNotification(title, body, data);
+  }, delaySeconds * 1000);
 };
 
 const handleNotificationResponse = (
-  response: Notifications.NotificationResponse,
-  navigation: any,
-  isNotificationEnabled: (type: NotificationType) => boolean
+  data: NotificationData,
+  navigation: any
 ) => {
-  const data = response.notification.request.content.data as NotificationData;
   if (!data?.type) return;
-
-  const typedType = data.type as NotificationType;
-  const isPreferenceType = Object.values(NotificationType).includes(typedType);
-  if (isPreferenceType && !isNotificationEnabled(typedType)) return;
 
   switch (data.type) {
     case NotificationType.NEW_PRODUCT:
@@ -132,18 +106,7 @@ const handleNotificationResponse = (
   }
 };
 
-export const updateNotificationBadge = async (count: number): Promise<void> => {
-  try {
-    await Notifications.setBadgeCountAsync(count);
-  } catch (error) {
-    console.warn('[Notifications] Error updating badge:', error);
-  }
-};
-
+export const updateNotificationBadge = async (count: number): Promise<void> => {};
 export const clearAllNotifications = async (): Promise<void> => {
-  try {
-    await Notifications.dismissAllNotificationsAsync();
-  } catch (error) {
-    console.warn('[Notifications] Error clearing notifications:', error);
-  }
+  Toast.hide();
 };

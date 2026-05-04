@@ -18,11 +18,14 @@ function RootApp() {
   );
 }
 
+import Toast from 'react-native-toast-message';
+
 export default function App() {
   return (
     <ErrorBoundary>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <RootApp />
+        <Toast />
       </GestureHandlerRootView>
     </ErrorBoundary>
   );

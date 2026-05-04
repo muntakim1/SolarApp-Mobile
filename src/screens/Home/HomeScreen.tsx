@@ -15,6 +15,7 @@ import { useNavigation } from '@react-navigation/native';
 import { colors } from '../../constants/colors';
 import { Logo } from '../../components/Logo';
 import { productService as productSvc, Product } from '../../services/productService';
+import { EventBus } from '../../utils/EventBus';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -39,6 +40,10 @@ export const HomeScreen: React.FC = () => {
 
   useEffect(() => {
     loadFeatured();
+    const sub = EventBus.addListener('products_updated', loadFeatured);
+    return () => {
+      sub.remove();
+    };
   }, []);
 
   const loadFeatured = async () => {

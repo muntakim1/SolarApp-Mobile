@@ -15,6 +15,7 @@ import { CatalogStackParamList } from '../../navigation/CatalogStack';
 import { productService as productSvc, Product } from '../../services/productService';
 import { FontAwesome } from '@expo/vector-icons';
 import { colors } from '../../constants/colors';
+import { EventBus } from '../../utils/EventBus';
 
 type Props = {
   navigation: NativeStackNavigationProp<CatalogStackParamList, 'CatalogList'>;
@@ -42,6 +43,10 @@ export const CatalogScreen: React.FC<Props> = ({ navigation, route }) => {
 
   useEffect(() => {
     fetchData();
+    const sub = EventBus.addListener('products_updated', fetchData);
+    return () => {
+      sub.remove();
+    };
   }, []);
 
   const fetchData = async () => {

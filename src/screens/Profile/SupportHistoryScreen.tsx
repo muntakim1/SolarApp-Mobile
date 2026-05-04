@@ -14,6 +14,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { colors, Typography as typography } from '../../constants';
 import { supportService, SupportTicket } from '../../services/supportService';
+import { EventBus } from '../../utils/EventBus';
 
 interface SupportStats {
   totalTickets: number;
@@ -52,6 +53,10 @@ export default function SupportHistoryScreen() {
 
   useEffect(() => {
     fetchSupportHistory();
+    const sub = EventBus.addListener('tickets_updated', fetchSupportHistory);
+    return () => {
+      sub.remove();
+    };
   }, [fetchSupportHistory]);
 
   const onRefresh = useCallback(async () => {

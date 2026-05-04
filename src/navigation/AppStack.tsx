@@ -7,6 +7,8 @@ import { OrdersStack } from './OrdersStack';
 import { ProfileStack } from './ProfileStack';
 import { HomeScreen } from '../screens/Home/HomeScreen';
 import { useCartStore } from '../store/cartStore';
+import { useSupabaseRealtime } from '../hooks/useSupabaseRealtime';
+import { useRealtimeNotifications } from '../hooks/useRealtimeNotifications';
 
 import { colors } from '../constants/colors';
 
@@ -14,6 +16,9 @@ const Tab = createBottomTabNavigator();
 
 export const AppStack = () => {
   const itemCount = useCartStore((state) => state.getItemCount());
+  
+  useRealtimeNotifications();
+  useSupabaseRealtime();
 
   return (
     <Tab.Navigator

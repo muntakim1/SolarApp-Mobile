@@ -27,7 +27,13 @@ export const OrderSuccessScreen: React.FC<Props> = ({ navigation, route }) => {
 
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.navigate('Home')}
+        onPress={() => {
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'CartMain' }],
+          });
+          navigation.navigate('Home');
+        }}
       >
         <Text style={styles.buttonText}>Continue Shopping</Text>
       </TouchableOpacity>
